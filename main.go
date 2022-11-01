@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	correct_answers := 0
 	csvFileName := flag.String("c", "questions.csv", "csv file or whatever")
 	flag.Parse()
 
@@ -32,16 +33,18 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Printf("Question : %s\n", scanned[0])
-		fmt.Print("Answer: ")
+		fmt.Print("Your answer: ")
 		reader, err := bufio.NewReader(os.Stdin).ReadString('\n')
 		if err != nil {
 			log.Fatal(err)
 		}
 		ans := strings.TrimRight(reader, "\r\n")
 		if ans == scanned[1] {
-			fmt.Printf("Good job %s the correct answer. \n-\n", ans)
+			correct_answers++
+			fmt.Printf("Good job %s is the correct answer. \n-\n", ans)
 		} else {
-			fmt.Printf("try again\n")
+			fmt.Printf("Try again.\n-\n")
 		}
 	}
+	defer fmt.Printf("Game Ended. \nNumber of correct answers: %d.\n", correct_answers)
 }
