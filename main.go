@@ -9,6 +9,16 @@ import (
 	"strings"
 )
 
+func ask_question(question string) string {
+	fmt.Printf("Question : %s\n", question)
+	fmt.Print("Your answer: ")
+	userin, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	if err != nil {
+		log.Fatal(err)
+	}
+	user_answer := strings.TrimRight(userin, "\r\n")
+	return user_answer
+}
 func main() {
 	q := []string{}
 	a := []string{}
@@ -30,30 +40,17 @@ func main() {
 	}
 
 	for index, scanned := range q {
-
-		fmt.Printf("Question : %s\n", scanned)
-		fmt.Print("Your answer: ")
-		userin, err := bufio.NewReader(os.Stdin).ReadString('\n')
-		if err != nil {
-			log.Fatal(err)
-		}
-		user_answer := strings.TrimRight(userin, "\r\n")
+		user_answer := ask_question(scanned)
 		if user_answer == a[index] {
 			correct_answers++
-			fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n-\n\033[0m", user_answer)
+			fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
 		} else {
 			for {
-				fmt.Fprintf(os.Stdout, "\033[31mWrong Answer try again.\n-\n\033[0m")
-				fmt.Printf("Question : %s\n", scanned)
-				fmt.Print("Your answer: ")
-				userin, err := bufio.NewReader(os.Stdin).ReadString('\n')
-				if err != nil {
-					log.Fatal(err)
-				}
-				user_answer := strings.TrimRight(userin, "\r\n")
+				fmt.Fprintf(os.Stdout, "\033[31mWrong Answer try again.\n\033[0m-\n")
+				user_answer := ask_question(scanned)
 				if user_answer == a[index] {
 					correct_answers++
-					fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n-\n\033[0m", user_answer)
+					fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
 					break
 				}
 			}
