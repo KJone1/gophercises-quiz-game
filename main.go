@@ -10,7 +10,7 @@ import (
 )
 
 func ask_question(question string) string {
-	fmt.Printf("Question : %s\n", question)
+	fmt.Printf("Question : %s= ?\n", question)
 	fmt.Print("Your answer: ")
 	userin, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
@@ -24,14 +24,15 @@ func main() {
 	a := []string{}
 	correct_answers := 0
 
-	csvFileName := flag.String("c", "questions.csv", "csv file or whatever")
+	csv_file_name := flag.String("c", "questions.csv", "csv file or whatever")
+	max_retries := flag.Int("r", 3, "number of retries on wrong answer")
 	flag.Parse()
 
-	file, err := os.ReadFile(*csvFileName)
+	file, err := os.ReadFile(*csv_file_name)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Questions from: %s\n", *csvFileName)
+	fmt.Printf("Questions from: %s\n", *csv_file_name)
 	newline_separated := strings.Split(string(file), "\r\n")
 	for index := range newline_separated {
 		comma_separated := strings.Split(newline_separated[index], ",")
@@ -45,14 +46,19 @@ func main() {
 			correct_answers++
 			fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
 		} else {
-			for {
-				fmt.Fprintf(os.Stdout, "\033[31mWrong Answer try again.\n\033[0m-\n")
+			retries := 0
+			for retries < *max_retries {
+				retries++
+				fmt.Fprintf(os.Stdout, "\033[31mWrong Answer %d tries remaining.\n\033[0m-\n", 3-retries)
 				user_answer := ask_question(scanned)
 				if user_answer == a[index] {
 					correct_answers++
 					fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
 					break
 				}
+			}
+			if retries == *max_retries {
+				fmt.Fprintf(os.Stdout, "\033[31mWrong Answer.\n\033[0m-\n")
 			}
 		}
 	}
