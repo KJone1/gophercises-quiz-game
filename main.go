@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func ask_question(question string) string {
+func AskQuestion(question string) string {
 	fmt.Printf("Question : %s = ?\n", question)
 	fmt.Print("Your answer: ")
 	userin, err := bufio.NewReader(os.Stdin).ReadString('\n')
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	for index, scanned := range q {
-		user_answer := ask_question(scanned)
+		user_answer := AskQuestion(scanned)
 		if user_answer == a[index] {
 			correct_answers++
 			fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
@@ -54,7 +54,7 @@ func main() {
 					fmt.Fprintf(os.Stdout, "\033[31mWrong Answer %d tries remaining.\n\033[0m-\n", *max_retries-wrong_answers)
 				}
 				wrong_answers++
-				user_answer := ask_question(scanned)
+				user_answer := AskQuestion(scanned)
 				if user_answer == a[index] {
 					correct_answers++
 					fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
