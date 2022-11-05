@@ -10,7 +10,7 @@ import (
 )
 
 func ask_question(question string) string {
-	fmt.Printf("Question : %s= ?\n", question)
+	fmt.Printf("Question : %s = ?\n", question)
 	fmt.Print("Your answer: ")
 	userin, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
@@ -46,20 +46,24 @@ func main() {
 			correct_answers++
 			fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
 		} else {
-			retries := 0
-			for retries < *max_retries {
-				retries++
-				fmt.Fprintf(os.Stdout, "\033[31mWrong Answer %d tries remaining.\n\033[0m-\n", 3-retries)
+			wrong_answers := 0
+			for wrong_answers < *max_retries {
+				if *max_retries-wrong_answers == 1 {
+					fmt.Fprintf(os.Stdout, "\033[31mFinal chance...\n\033[0m-\n")
+				} else {
+					fmt.Fprintf(os.Stdout, "\033[31mWrong Answer %d tries remaining.\n\033[0m-\n", *max_retries-wrong_answers)
+				}
+				wrong_answers++
 				user_answer := ask_question(scanned)
 				if user_answer == a[index] {
 					correct_answers++
 					fmt.Fprintf(os.Stdout, "\033[32mGood job %s is the correct answer. \n\033[0m-\n", user_answer)
 					break
+				} else if wrong_answers == *max_retries {
+					fmt.Fprintf(os.Stdout, "\033[31mWrong Answer.\n\033[0m-\n")
 				}
 			}
-			if retries == *max_retries {
-				fmt.Fprintf(os.Stdout, "\033[31mWrong Answer.\n\033[0m-\n")
-			}
+
 		}
 	}
 	fmt.Printf("Game Ended. \nNumber of correct answers: %d.\n", correct_answers)
